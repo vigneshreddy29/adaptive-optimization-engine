@@ -1,0 +1,86 @@
+{
+  "GS1_MaxQuality_MinEnergy": {
+    "scenario_key": "GS1_MaxQuality_MinEnergy",
+    "scenario_label": "Max Quality + Min Energy",
+    "version": 2,
+    "created_at": "2026-03-12T16:09:31.496754",
+    "last_updated": "2026-03-12T19:26:03.825394",
+    "source_batch_id": "T_TEST",
+    "composite_score": 0.9976,
+    "quality_score": 100.0,
+    "yield_score": 99.0,
+    "performance_score": 99.0,
+    "energy_kwh": 58.6,
+    "carbon_kg": 13.66,
+    "is_pareto": true,
+    "process_params": {},
+    "update_history": [
+      {
+        "archived_at": "2026-03-12T19:26:03.825394",
+        "version": 1,
+        "source_batch_id": "T009",
+        "composite_score": 0.8214,
+        "quality_score": 100.0,
+        "yield_score": 94.89,
+        "energy_kwh": 72.49,
+        "carbon_kg": 16.8906,
+        "reason": "HITL ACCEPT \u2014 superseded by better batch"
+      }
+    ],
+    "hitl_overrides": []
+  },
+  "GS2_MaxYield_MinCarbon": {
+    "scenario_key": "GS2_MaxYield_MinCarbon",
+    "scenario_label": "Max Yield + Min Carbon",
+    "version": 1,
+    "created_at": "2026-03-12T16:09:31.496754",
+    "last_updated": "2026-03-12T16:09:31.496754",
+    "source_batch_id": "T005",
+    "composite_score": 0.8612,
+    "quality_score": 86.32,
+    "yield_score": 97.23,
+    "performance_score": 33.33,
+    "energy_kwh": 60.54,
+    "carbon_kg": 14.1062,
+    "is_pareto": true,
+    "process_params": {
+      "Granulation_Time": 10.0,
+      "Binder_Amount": 6.5,
+      "Drying_Temp": 70.0,
+      "Drying_Time": 18.0,
+      "Compression_Force": 16.2,
+      "Machine_Speed": 100.0,
+      "Lubricant_Conc": 0.6,
+      "Moisture_Content": 3.2
+    },
+    "update_history": [],
+    "hitl_overrides": []
+  },
+  "GS3_Balanced": {
+    "scenario_key": "GS3_Balanced",
+    "scenario_label": "Balanced \u2014 All Objectives",
+    "version": 1,
+    "created_at": "2026-03-12T16:09:31.496754",
+    "last_updated": "2026-03-12T16:09:31.496754",
+    "source_batch_id": "T005",
+    "composite_score": 0.7812,
+    "quality_score": 86.32,
+    "yield_score": 97.23,
+    "performance_score": 33.33,
+    "energy_kwh": 60.54,
+    "carbon_kg": 14.1062,
+    "is_pareto": true,
+    "process_params": {
+      "Granulation_Time": 10.0,
+      "Binder_Amount": 6.5,
+      "Drying_Temp": 70.0,
+      "Drying_Time": 18.0,
+      "Compression_Force": 16.2,
+      "Machine_Speed": 100.0,
+      "Lubricant_Conc": 0.6,
+      "Moisture_Content": 3.2
+    },
+    "update_history": [],
+    "hitl_overrides": []
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "quality_model": {
+    "model": "XGBoost Regressor",
+    "target": "Dissolution_Rate",
+    "target_display": "Quality Score (via Dissolution Rate)",
+    "n_samples": 60,
+    "n_features": 7,
+    "r2_train": 0.9938,
+    "r2_cv_mean": 0.9658,
+    "r2_cv_std": 0.0089,
+    "rmse_train": 0.3626,
+    "mae_train": 0.2578,
+    "rmse_cv_mean": 0.8085,
+    "feature_names": [
+      "Granulation_Time",
+      "Binder_Amount",
+      "Drying_Time",
+      "Machine_Speed",
+      "Moisture_Content",
+      "Compression_Force",
+      "Lubricant_Conc"
+    ],
+    "dissolution_mean": 90.9283,
+    "dissolution_std": 4.6269,
+    "quality_mean": 54.9492,
+    "quality_std": 2.7417,
+    "feature_importance": {
+      "Machine_Speed": 0.3248000144958496,
+      "Granulation_Time": 0.2531999945640564,
+      "Drying_Time": 0.09950000047683716,
+      "Compression_Force": 0.08820000290870667,
+      "Moisture_Content": 0.08160000294446945,
+      "Lubricant_Conc": 0.07810000330209732,
+      "Binder_Amount": 0.07460000365972519
+    }
+  },
+  "energy_model": {
+    "model": "XGBoost Regressor",
+    "target": "Est_Total_Energy_kWh",
+    "n_samples": 60,
+    "n_features": 12,
+    "r2_train": 0.9996,
+    "r2_cv_mean": 0.9606,
+    "r2_cv_std": 0.0155,
+    "rmse_train": 0.1751,
+    "mae_train": 0.1278,
+    "rmse_cv_mean": 1.6519,
+    "feature_names": [
+      "Granulation_Time",
+      "Binder_Amount",
+      "Drying_Temp",
+      "Drying_Time",
+      "Compression_Force",
+      "Machine_Speed",
+      "Lubricant_Conc",
+      "Moisture_Content",
+      "Drying_Intensity",
+      "Compression_Intensity",
+      "Moisture_Deviation",
+      "Granulation_Efficiency"
+    ],
+    "feature_importance": {
+      "Drying_Time": 0.48890000581741333,
+      "Machine_Speed": 0.2125999927520752,
+      "Binder_Amount": 0.10040000081062317,
+      "Granulation_Time": 0.07850000262260437,
+      "Drying_Temp": 0.04129999876022339,
+      "Granulation_Efficiency": 0.03720000013709068,
+      "Drying_Intensity": 0.026900000870227814,
+      "Lubricant_Conc": 0.006000000052154064,
+      "Compression_Intensity": 0.003000000026077032,
+      "Moisture_Content": 0.002300000051036477,
+      "Moisture_Deviation": 0.0020000000949949026,
+      "Compression_Force": 0.0010999999940395355
+    }
+  }
+}

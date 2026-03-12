@@ -1,0 +1,122 @@
+[
+  {
+    "timestamp": "2026-03-10T19:34:10.452638",
+    "batch_id": "T_DEFAULT_TEST",
+    "scenario_key": "GS1_MaxQuality_MinEnergy",
+    "decision": "ACCEPT",
+    "reason": "Operator accepted GS recommendation",
+    "weights_used": {
+      "label": "Max Quality + Min Energy",
+      "w_quality": 0.4,
+      "w_yield": 0.15,
+      "w_performance": 0.1,
+      "w_energy": 0.25,
+      "w_carbon": 0.1
+    }
+  },
+  {
+    "timestamp": "2026-03-10T19:37:05.792573",
+    "batch_id": "T_BEAT_GS",
+    "scenario_key": "GS1_MaxQuality_MinEnergy",
+    "decision": "ACCEPT",
+    "reason": "Operator accepted GS recommendation",
+    "weights_used": {
+      "label": "Max Quality + Min Energy",
+      "w_quality": 0.4,
+      "w_yield": 0.15,
+      "w_performance": 0.1,
+      "w_energy": 0.25,
+      "w_carbon": 0.1
+    }
+  },
+  {
+    "timestamp": "2026-03-10T19:38:00.324897",
+    "batch_id": "T_BEAT_GS",
+    "scenario_key": "GS1_MaxQuality_MinEnergy",
+    "decision": "ACCEPT",
+    "reason": "Operator accepted GS recommendation",
+    "weights_used": {
+      "label": "Max Quality + Min Energy",
+      "w_quality": 0.4,
+      "w_yield": 0.15,
+      "w_performance": 0.1,
+      "w_energy": 0.25,
+      "w_carbon": 0.1
+    }
+  },
+  {
+    "timestamp": "2026-03-12T16:12:55.106760",
+    "batch_id": "T_NEW_001",
+    "scenario_key": "GS1_MaxQuality_MinEnergy",
+    "decision": "ACCEPT",
+    "reason": "Operator accepted GS recommendation",
+    "weights_used": {
+      "label": "Max Quality + Min Energy",
+      "w_quality": 0.4,
+      "w_yield": 0.15,
+      "w_performance": 0.1,
+      "w_energy": 0.25,
+      "w_carbon": 0.1
+    }
+  },
+  {
+    "timestamp": "2026-03-12T16:16:04.977653",
+    "batch_id": "T_NEW_001",
+    "scenario_key": "GS1_MaxQuality_MinEnergy",
+    "decision": "ACCEPT",
+    "reason": "Operator accepted GS recommendation",
+    "weights_used": {
+      "label": "Max Quality + Min Energy",
+      "w_quality": 0.4,
+      "w_yield": 0.15,
+      "w_performance": 0.1,
+      "w_energy": 0.25,
+      "w_carbon": 0.1
+    }
+  },
+  {
+    "timestamp": "2026-03-12T19:15:09.170329",
+    "batch_id": "T_NEW_001",
+    "scenario_key": "GS1_MaxQuality_MinEnergy",
+    "decision": "ACCEPT",
+    "reason": "Operator accepted GS recommendation",
+    "weights_used": {
+      "label": "Max Quality + Min Energy",
+      "w_quality": 0.4,
+      "w_yield": 0.15,
+      "w_performance": 0.1,
+      "w_energy": 0.25,
+      "w_carbon": 0.1
+    }
+  },
+  {
+    "timestamp": "2026-03-12T19:23:23.202188",
+    "batch_id": "T_NEW_001",
+    "scenario_key": "GS1_MaxQuality_MinEnergy",
+    "decision": "ACCEPT",
+    "reason": "Operator accepted GS recommendation",
+    "weights_used": {
+      "label": "Max Quality + Min Energy",
+      "w_quality": 0.4,
+      "w_yield": 0.15,
+      "w_performance": 0.1,
+      "w_energy": 0.25,
+      "w_carbon": 0.1
+    }
+  },
+  {
+    "timestamp": "2026-03-12T19:36:50.567404",
+    "batch_id": "T_NEW_001",
+    "scenario_key": "GS1_MaxQuality_MinEnergy",
+    "decision": "ACCEPT",
+    "reason": "Operator accepted GS recommendation",
+    "weights_used": {
+      "label": "Max Quality + Min Energy",
+      "w_quality": 0.4,
+      "w_yield": 0.15,
+      "w_performance": 0.1,
+      "w_energy": 0.25,
+      "w_carbon": 0.1
+    }
+  }
+]

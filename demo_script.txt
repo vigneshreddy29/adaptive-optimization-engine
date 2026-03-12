@@ -1,0 +1,290 @@
+================================================================
+  TEAM VORTEX — LIVE DEMO SCRIPT
+  YUVAAN Hackathon | IIT Hyderabad × AVEVA
+  Track: Option B — Optimization Engine Specialization
+================================================================
+
+TOTAL DEMO TIME: 8-10 minutes
+PRESENTER SETUP:
+  - Streamlit dashboard open at localhost:8501
+  - FastAPI Swagger open at localhost:8000/docs (second tab)
+  - VS Code open showing project structure (third tab)
+  - All three visible and ready before judges arrive
+
+================================================================
+SECTION 1 — OPENING (60 seconds)
+================================================================
+
+SAY:
+"Manufacturing plants lose millions annually to inefficient
+processes — too much energy, too much carbon, too little
+consistency. Our system, the Adaptive Optimization Engine,
+solves this by learning from every batch, maintaining optimal
+parameter configurations called Golden Signatures, and putting
+a human operator at the center of every critical decision."
+
+"We built this on real pharmaceutical tablet manufacturing data
+— 60 production batches, 15 process parameters, 8 manufacturing
+phases. Let me show you how it works."
+
+ACTION: Switch to Streamlit. Overview page is visible.
+
+================================================================
+SECTION 2 — OVERVIEW PAGE (90 seconds)
+================================================================
+
+SAY:
+"This is our live dashboard. Five key metrics at the top —
+60 batches analyzed, 21 identified as Pareto-optimal, average
+energy of 79.8 kWh per batch, and a best achieved of 58.6 kWh.
+That is a 26% gap between average and best — exactly the
+opportunity our system targets."
+
+POINT TO energy histogram:
+"This distribution shows where most batches cluster — between
+75 and 90 kWh. The red dashed line is our adaptive target —
+73.4 kWh. Only a minority of batches currently meet it.
+Our system tells operators exactly how to get there."
+
+POINT TO scatter plot:
+"Green dots are Pareto-optimal batches. These are batches where
+no other batch beats them on ALL objectives simultaneously.
+Notice they cluster at higher quality AND lower energy —
+that is the frontier we want every batch to reach."
+
+================================================================
+SECTION 3 — OPTIMIZATION ENGINE (90 seconds)
+================================================================
+
+ACTION: Click Optimization Engine page.
+
+SAY:
+"This is the mathematical core. We evaluate every batch across
+five objectives simultaneously — Quality, Yield, Performance,
+Energy Efficiency, and Carbon Efficiency."
+
+POINT TO 3D Pareto plot:
+"This three-dimensional Pareto front shows Quality on one axis,
+Yield on another, and Energy on the third. Green points dominate
+— no blue point can beat them across all three dimensions at
+once. This is rigorous multi-objective optimization, not just
+picking the batch with the highest single score."
+
+SCROLL DOWN to scenario results:
+
+SAY:
+"We run three scenarios with different objective weightings.
+Scenario one prioritizes Quality and Energy — best batch is T009
+with a score of 0.82. Scenario two prioritizes Yield and Carbon
+— best batch is T005 with 0.87. The system makes different,
+intelligent decisions for different business priorities.
+This is what separates optimization from simple ranking."
+
+================================================================
+SECTION 4 — GOLDEN SIGNATURES (60 seconds)
+================================================================
+
+ACTION: Click Golden Signatures page.
+
+SAY:
+"Golden Signatures are the memory of our system. Each one
+represents the best-known parameter configuration for a specific
+objective scenario."
+
+POINT TO GS1:
+"GS1 — Max Quality and Min Energy — is anchored to Batch T009.
+72.5 kWh, quality score 61.25, composite score 0.82. These
+are the exact process parameters an operator should target."
+
+POINT TO process parameters table:
+"On the right — every process parameter required to reproduce
+this result. Granulation time 13 minutes, drying temperature
+63 degrees, compression force 14.2 kN. This is actionable,
+not just analytical."
+
+SAY:
+"Critically — these Golden Signatures are versioned. When a
+future batch outperforms the current GS by more than 1%, and
+the operator approves it, the GS automatically updates to
+the new best. Continuous improvement is built in."
+
+================================================================
+SECTION 5 — HITL WORKFLOW (3 minutes — THE CORE)
+================================================================
+
+ACTION: Click HITL Workflow page.
+
+SAY:
+"This is the most important part of our system — and the most
+important requirement of the problem statement. Human-in-the-Loop
+is not a feature we added on top. It is the architecture."
+
+POINT TO Step 1:
+"Step one — the operator configures a new batch. They select
+their optimization scenario and adjust process parameters using
+these sliders. The system responds in real time."
+
+ACTION: Move the Machine_Speed slider down slightly.
+
+POINT TO Step 2 — gap analysis table updating:
+"Step two — the moment any slider moves, the system compares
+the operator's configuration against the Golden Signature and
+shows the exact parameter gap. Here — Machine Speed is 23%
+above the GS recommendation. Compression Force needs to go up
+22%. Every adjustment is quantified."
+
+POINT TO Expected Impact metrics:
+"And here is the business case — if the operator adopts the
+GS parameters, they can expect 9.1% energy saving, 9.1%
+carbon reduction, quality improvement of 6.3 points, and
+yield improvement of 17.9 points. Concrete numbers,
+not vague suggestions."
+
+POINT TO Target Evaluation:
+"The system also checks the GS against our adaptive targets.
+Energy is on target. Carbon is marginally above — flagged
+immediately for the operator to see."
+
+ACTION: Scroll down to Step 3.
+
+SAY:
+"Step three — the human decision. Three options. ACCEPT means
+the operator approves the GS parameters for this batch and
+the decision is logged. REJECT means they keep their current
+configuration — also logged with their reason. REPRIORITIZE
+means they want to change the objective weights entirely."
+
+ACTION: Click REPRIORITIZE button.
+
+SAY:
+"Watch what happens. The operator gets five weight sliders —
+one per objective. They can shift priority toward carbon
+reduction, or toward quality, depending on today's production
+requirements. This satisfies the problem statement requirement
+to reprioritize targets dynamically."
+
+ACTION: Adjust quality weight to 0.40, carbon to 0.30.
+ACTION: Click Apply Reprioritization.
+
+SAY:
+"The new weights are logged with a timestamp, the batch ID,
+the reason, and the full weight configuration. This log is
+reused in every future recommendation — the system learns
+from operator preferences over time."
+
+================================================================
+SECTION 6 — HISTORY & LEARNING (45 seconds)
+================================================================
+
+ACTION: Click History & Learning page.
+ACTION: Click HITL Decision Log tab.
+
+SAY:
+"Every decision we just made is recorded here permanently.
+Timestamp, batch ID, scenario, decision, reason, weights.
+This is the audit trail that regulators require and that
+our continuous learning loop depends on."
+
+ACTION: Click Batch Performance Trend tab.
+
+SAY:
+"And here is the performance trend across all 60 batches.
+Blue is Quality Score, orange is Energy. Notice the inverse
+relationship — when energy spikes, quality often drops.
+Our optimization engine navigates exactly this trade-off."
+
+================================================================
+SECTION 7 — API LAYER (45 seconds)
+================================================================
+
+ACTION: Switch to FastAPI Swagger tab.
+
+SAY:
+"Finally — integration. Every capability in the dashboard is
+exposed as a REST API endpoint. POST /optimize runs the engine.
+GET /golden-signature retrieves any GS. POST /hitl-decision
+logs operator decisions from external systems. GET /adaptive-
+targets returns current goals."
+
+ACTION: Click GET /health → Try it out → Execute.
+
+SAY:
+"Live response — system healthy, 60 batches loaded, 3 Golden
+Signatures active. Any AVEVA system, any MES, any ERP can
+integrate with this engine through these endpoints."
+
+================================================================
+SECTION 8 — CLOSING (45 seconds)
+================================================================
+
+SAY:
+"Let me summarize what we built. A complete AI optimization
+engine that identifies the Pareto-optimal frontier across
+60 batches, maintains three versioned Golden Signatures,
+generates actionable parameter recommendations, sets adaptive
+energy and carbon targets, and puts a human operator in
+control of every decision — with every decision logged,
+audited, and fed back into future recommendations."
+
+"This is not a dashboard. This is a production-ready
+optimization system. Thank you."
+
+================================================================
+PREPARED ANSWERS FOR JUDGE QUESTIONS
+================================================================
+
+Q: "Why T001 for energy calibration?"
+A: "T001 is the only batch with complete time-series sensor
+   data across all 8 manufacturing phases. We extracted
+   phase-level energy proportions from it and used those
+   as calibration coefficients for all 60 batches. The
+   estimates are validated — energy range of 58 to 91 kWh
+   is physically realistic for this process."
+
+Q: "What prevents the operator from always rejecting?"
+A: "All decisions are logged with timestamps and reasons.
+   The HITL audit log creates accountability. In a production
+   deployment, rejection patterns would be visible to
+   plant managers. The system learns from rejections too —
+   they inform future weight adjustments."
+
+Q: "How does the GS update without human approval?"
+A: "It does not. The Pareto dominance check identifies
+   candidates, but the update only executes after the operator
+   clicks ACCEPT. This is a design choice — we enforce human
+   oversight on all Golden Signature changes."
+
+Q: "What is the carbon emission factor?"
+A: "0.000233 kg CO2 per Wh — the India grid average emission
+   factor. This converts our energy estimates to carbon
+   footprint, allowing us to track sustainability targets
+   against real-world benchmarks."
+
+Q: "Can this generalize to other manufacturing domains?"
+A: "Yes. The process parameter columns, quality output columns,
+   and objective weights are all defined in config.py.
+   Changing the domain requires only updating that single
+   configuration file and reloading the dataset."
+
+Q: "What does Pareto-optimal mean here practically?"
+A: "A batch is Pareto-optimal if no other batch beats it
+   on all five objectives at the same time. 21 of our 60
+   batches are on this frontier. These are the only batches
+   worth considering as Golden Signature candidates —
+   any other batch is provably suboptimal."
+
+================================================================
+DEMO CHECKLIST — RUN BEFORE JUDGES ARRIVE
+================================================================
+
+[ ] streamlit run dashboard/app.py — running at 8501
+[ ] uvicorn api.main:app --reload --port 8000 — running
+[ ] http://localhost:8501 — Overview page loaded
+[ ] http://localhost:8000/docs — Swagger loaded
+[ ] VS Code open — project structure visible
+[ ] HITL page tested — sliders responsive
+[ ] GET /health tested — returns healthy
+[ ] Screen resolution comfortable for presenting
+[ ] Backup: screenshots of all 6 pages saved
+
+================================================================
