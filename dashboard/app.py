@@ -193,6 +193,107 @@ if page == "🏠 Overview":
 
     st.markdown("---")
     col_a, col_b = st.columns(2)
+# ── Business Impact Card ──────────────────────────────────────────────
+    st.markdown("---")
+    st.markdown("### 💰 Real-World Business Impact")
+
+    fleet_avg_energy = float(df["Est_Total_Energy_kWh"].mean())
+    best_energy      = float(df["Est_Total_Energy_kWh"].min())
+    fleet_avg_carbon = float(df["Est_Carbon_kg"].mean())
+    best_carbon      = float(df["Est_Carbon_kg"].min())
+
+    BATCHES_PER_YEAR     = 1000
+    ELECTRICITY_RATE_INR = 8.0          # Rs per kWh, India industrial rate
+    CO2_PER_TREE_KG      = 22.0         # kg CO2 absorbed per tree per year
+
+    energy_saved_per_batch  = fleet_avg_energy - best_energy
+    energy_saved_year       = energy_saved_per_batch * BATCHES_PER_YEAR
+    cost_saved_year         = energy_saved_year * ELECTRICITY_RATE_INR
+    cost_saved_lakh         = cost_saved_year / 100000
+    carbon_saved_per_batch  = fleet_avg_carbon - best_carbon
+    carbon_saved_year       = carbon_saved_per_batch * BATCHES_PER_YEAR
+    trees_equivalent        = int(carbon_saved_year / CO2_PER_TREE_KG)
+    saving_pct              = (energy_saved_per_batch / fleet_avg_energy) * 100
+
+    bi1, bi2, bi3, bi4, bi5 = st.columns(5)
+
+    bi1.markdown(f"""
+    <div style='background:#0F2044;padding:16px 10px;border-radius:8px;
+                border-top:3px solid #00D4AA;text-align:center;'>
+        <div style='font-size:26px;font-weight:bold;color:#00D4AA;'>
+            {saving_pct:.1f}%
+        </div>
+        <div style='font-size:11px;color:#8899AA;margin-top:4px;'>
+            Max Energy Saving
+        </div>
+        <div style='font-size:10px;color:#CBD5E0;margin-top:2px;'>
+            {best_energy:.1f} vs {fleet_avg_energy:.1f} kWh avg
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    bi2.markdown(f"""
+    <div style='background:#0F2044;padding:16px 10px;border-radius:8px;
+                border-top:3px solid #FFB800;text-align:center;'>
+        <div style='font-size:26px;font-weight:bold;color:#FFB800;'>
+            ₹{cost_saved_lakh:.2f}L
+        </div>
+        <div style='font-size:11px;color:#8899AA;margin-top:4px;'>
+            Annual Cost Saving
+        </div>
+        <div style='font-size:10px;color:#CBD5E0;margin-top:2px;'>
+            at 1,000 batches/year
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    bi3.markdown(f"""
+    <div style='background:#0F2044;padding:16px 10px;border-radius:8px;
+                border-top:3px solid #4D9EFF;text-align:center;'>
+        <div style='font-size:26px;font-weight:bold;color:#4D9EFF;'>
+            {energy_saved_year:,.0f}
+        </div>
+        <div style='font-size:11px;color:#8899AA;margin-top:4px;'>
+            kWh Saved / Year
+        </div>
+        <div style='font-size:10px;color:#CBD5E0;margin-top:2px;'>
+            {energy_saved_per_batch:.1f} kWh per batch
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    bi4.markdown(f"""
+    <div style='background:#0F2044;padding:16px 10px;border-radius:8px;
+                border-top:3px solid #00C897;text-align:center;'>
+        <div style='font-size:26px;font-weight:bold;color:#00C897;'>
+            {carbon_saved_year:,.0f}
+        </div>
+        <div style='font-size:11px;color:#8899AA;margin-top:4px;'>
+            kg CO₂ Prevented/Year
+        </div>
+        <div style='font-size:10px;color:#CBD5E0;margin-top:2px;'>
+            {carbon_saved_per_batch:.2f} kg per batch
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    bi5.markdown(f"""
+    <div style='background:#0F2044;padding:16px 10px;border-radius:8px;
+                border-top:3px solid #B96AFF;text-align:center;'>
+        <div style='font-size:26px;font-weight:bold;color:#B96AFF;'>
+            🌳 {trees_equivalent}
+        </div>
+        <div style='font-size:11px;color:#8899AA;margin-top:4px;'>
+            Trees Equivalent
+        </div>
+        <div style='font-size:10px;color:#CBD5E0;margin-top:2px;'>
+            CO₂ absorbed per year
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown("<br>", unsafe_allow_html=True)
+    # ── End Business Impact Card ──────────────────────────────────────────
 
     with col_a:
         st.subheader("📉 Energy Distribution Across Batches")
@@ -800,6 +901,207 @@ elif page == "🔬 T001 Analysis":
                 "Phase energy profiles, vibration anomaly detection, and efficiency ranking.")
 
     st.markdown("---")
+    # ── Live Batch Energy Simulation ─────────────────────────────────────
+    st.subheader("⚡ Live Batch Energy Simulation")
+    st.markdown("Adjust parameters to see how energy distributes across phases in real time.")
+
+    sim_col1, sim_col2 = st.columns([1, 2])
+
+    with sim_col1:
+        st.markdown("**Simulation Parameters:**")
+        anim_machine_speed = st.slider(
+            "Machine Speed (RPM)",
+            min_value=float(df["Machine_Speed"].min()),
+            max_value=float(df["Machine_Speed"].max()),
+            value=float(config.T001_MACHINE_SPEED),
+            step=1.0,
+            key="anim_speed"
+        )
+        anim_drying_time = st.slider(
+            "Drying Time (min)",
+            min_value=float(df["Drying_Time"].min()),
+            max_value=float(df["Drying_Time"].max()),
+            value=float(config.T001_DRYING_TIME),
+            step=0.5,
+            key="anim_drying_time"
+        )
+        anim_drying_temp = st.slider(
+            "Drying Temp (C)",
+            min_value=float(df["Drying_Temp"].min()),
+            max_value=float(df["Drying_Temp"].max()),
+            value=float(config.T001_DRYING_TEMP),
+            step=1.0,
+            key="anim_drying_temp"
+        )
+        anim_compression = st.slider(
+            "Compression Force (kN)",
+            min_value=float(df["Compression_Force"].min()),
+            max_value=float(df["Compression_Force"].max()),
+            value=float(config.T001_COMPRESSION_FORCE),
+            step=0.1,
+            key="anim_compression"
+        )
+        anim_gran_time = st.slider(
+            "Granulation Time (min)",
+            min_value=float(df["Granulation_Time"].min()),
+            max_value=float(df["Granulation_Time"].max()),
+            value=float(config.T001_GRANULATION_TIME),
+            step=0.5,
+            key="anim_gran_time"
+        )
+
+    with sim_col2:
+        # Compute phase energies from slider values
+        speed_ratio = anim_machine_speed   / config.T001_MACHINE_SPEED
+        dtime_ratio = anim_drying_time     / config.T001_DRYING_TIME
+        dtemp_ratio = anim_drying_temp     / config.T001_DRYING_TEMP
+        comp_ratio  = anim_compression     / config.T001_COMPRESSION_FORCE
+        gran_ratio  = anim_gran_time       / config.T001_GRANULATION_TIME
+
+        base = config.T001_TOTAL_ENERGY
+
+        phase_energies = {
+            "Preparation"    : config.PHASE_ENERGY_PROPORTIONS["Preparation"]     * base * speed_ratio * 0.5,
+            "Granulation"    : config.PHASE_ENERGY_PROPORTIONS["Granulation"]     * base * gran_ratio,
+            "Drying"         : config.PHASE_ENERGY_PROPORTIONS["Drying"]          * base * dtime_ratio * dtemp_ratio,
+            "Milling"        : config.PHASE_ENERGY_PROPORTIONS["Milling"]         * base * speed_ratio,
+            "Blending"       : config.PHASE_ENERGY_PROPORTIONS["Blending"]        * base * speed_ratio * 0.6,
+            "Compression"    : config.PHASE_ENERGY_PROPORTIONS["Compression"]     * base * comp_ratio  * speed_ratio,
+            "Coating"        : config.PHASE_ENERGY_PROPORTIONS["Coating"]         * base * speed_ratio * 0.7,
+            "Quality_Testing": config.PHASE_ENERGY_PROPORTIONS["Quality_Testing"] * base * 1.0,
+        }
+
+        total_energy_kwmin = sum(phase_energies.values())
+        total_energy_kwh   = total_energy_kwmin / 60.0
+
+        phases      = list(phase_energies.keys())
+        energies    = [round(v / 60.0, 2) for v in phase_energies.values()]
+        percentages = [round(v / total_energy_kwmin * 100, 1)
+                       for v in phase_energies.values()]
+
+        # Color map per phase
+        phase_colors = {
+            "Preparation"    : "#74B9FF",
+            "Granulation"    : "#00D4AA",
+            "Drying"         : "#FFB800",
+            "Milling"        : "#4ECDC4",
+            "Blending"       : "#96CEB4",
+            "Compression"    : "#FF6B6B",
+            "Coating"        : "#45B7D1",
+            "Quality_Testing": "#B96AFF",
+        }
+        colors = [phase_colors[p] for p in phases]
+
+        # Animated bar chart — frames build up phase by phase
+        import plotly.graph_objects as go
+
+        frames = []
+        for i in range(1, len(phases) + 1):
+            frame_data = go.Bar(
+                x=phases[:i],
+                y=energies[:i],
+                marker_color=colors[:i],
+                text=[f"{e:.1f} kWh<br>({p}%)"
+                      for e, p in zip(energies[:i], percentages[:i])],
+                textposition="outside",
+                textfont=dict(size=10, color="white"),
+            )
+            frames.append(go.Frame(
+                data=[frame_data],
+                name=str(i),
+                layout=go.Layout(
+                    title_text=f"Phase {i}/8 — "
+                               f"Cumulative: {sum(energies[:i]):.1f} kWh"
+                )
+            ))
+
+        # Initial figure — show all bars, animate on button press
+        fig_anim = go.Figure(
+            data=[go.Bar(
+                x=phases,
+                y=energies,
+                marker_color=colors,
+                text=[f"{e:.1f} kWh<br>({p}%)"
+                      for e, p in zip(energies, percentages)],
+                textposition="outside",
+                textfont=dict(size=10, color="white"),
+                hovertemplate="<b>%{x}</b><br>Energy: %{y:.2f} kWh<extra></extra>",
+            )],
+            frames=frames,
+            layout=go.Layout(
+                title=dict(
+                    text=f"Total Batch Energy: {total_energy_kwh:.1f} kWh  "
+                         f"| Compression dominates at "
+                         f"{percentages[phases.index('Compression')]:.1f}%",
+                    font=dict(size=13, color="white"),
+                    x=0.5,
+                ),
+                xaxis=dict(
+                    title="Production Phase",
+                    tickfont=dict(color="white", size=10),
+                    gridcolor="#1A3060",
+                ),
+                yaxis=dict(
+                    title="Energy (kWh)",
+                    tickfont=dict(color="white"),
+                    gridcolor="#1A3060",
+                    range=[0, max(energies) * 1.35],
+                ),
+                plot_bgcolor="#0A1628",
+                paper_bgcolor="#0A1628",
+                font=dict(color="white"),
+                height=420,
+                margin=dict(t=60, b=60, l=60, r=20),
+                updatemenus=[dict(
+                    type="buttons",
+                    showactive=False,
+                    y=1.15,
+                    x=0.0,
+                    xanchor="left",
+                    buttons=[
+                        dict(
+                            label="▶  Animate Phase Build",
+                            method="animate",
+                            args=[
+                                None,
+                                dict(
+                                    frame=dict(duration=600, redraw=True),
+                                    fromcurrent=False,
+                                    transition=dict(duration=300),
+                                )
+                            ]
+                        ),
+                        dict(
+                            label="⏹  Reset",
+                            method="animate",
+                            args=[
+                                [None],
+                                dict(
+                                    frame=dict(duration=0, redraw=True),
+                                    mode="immediate",
+                                    transition=dict(duration=0),
+                                )
+                            ]
+                        ),
+                    ]
+                )],
+            )
+        )
+
+        st.plotly_chart(fig_anim, use_container_width=True)
+
+        # KPI row below chart
+        k1, k2, k3, k4 = st.columns(4)
+        k1.metric("Total Energy",      f"{total_energy_kwh:.1f} kWh")
+        k2.metric("Compression Share", f"{percentages[phases.index('Compression')]:.1f}%")
+        k3.metric("Drying Share",      f"{percentages[phases.index('Drying')]:.1f}%")
+        k4.metric("vs T001 Baseline",
+                  f"{total_energy_kwh:.1f} kWh",
+                  delta=f"{total_energy_kwh - (config.T001_TOTAL_ENERGY/60):.1f} kWh",
+                  delta_color="inverse")
+
+    st.markdown("---")
+    # ── End Live Batch Energy Simulation ─────────────────────────────────
 
     with st.spinner("Loading T001 time-series..."):
         ts_data = load_timeseries_data()
