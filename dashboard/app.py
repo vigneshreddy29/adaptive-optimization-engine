@@ -376,22 +376,17 @@ elif page == "🤝 HITL Workflow":
 
         batch_id_input = st.text_input("New Batch ID", value="T_NEW_001")
 
-        # Simulate quality and energy outcomes from current params
-        # Using fleet correlations as a proxy predictor
-        param_df = pd.DataFrame([new_params])
+        # ── Z-score signals for each parameter ──────────────────────────────
+        gran_z   = (new_params["Granulation_Time"]  - df["Granulation_Time"].mean())  / df["Granulation_Time"].std()
+        binder_z = (new_params["Binder_Amount"]      - df["Binder_Amount"].mean())     / df["Binder_Amount"].std()
+        dtime_z  = (new_params["Drying_Time"]        - df["Drying_Time"].mean())       / df["Drying_Time"].std()
+        dtemp_z  = (new_params["Drying_Temp"]        - df["Drying_Temp"].mean())       / df["Drying_Temp"].std()
+        comp_z   = (new_params["Compression_Force"]  - df["Compression_Force"].mean()) / df["Compression_Force"].std()
+        speed_z  = (new_params["Machine_Speed"]      - df["Machine_Speed"].mean())     / df["Machine_Speed"].std()
+        moist_z  = (new_params["Moisture_Content"]   - df["Moisture_Content"].mean())  / df["Moisture_Content"].std()
+        lub_z    = (new_params["Lubricant_Conc"]     - df["Lubricant_Conc"].mean())    / df["Lubricant_Conc"].std()
 
-       # Correlation-based quality proxy
-        # Dissolution_Rate correlates: +0.98 Granulation, Binder, Drying_Time
-        #                              -0.99 Compression_Force, Hardness, Moisture
-        gran_z    = (new_params["Granulation_Time"] - df["Granulation_Time"].mean()) / df["Granulation_Time"].std()
-        binder_z  = (new_params["Binder_Amount"]    - df["Binder_Amount"].mean())    / df["Binder_Amount"].std()
-        dtime_z   = (new_params["Drying_Time"]      - df["Drying_Time"].mean())      / df["Drying_Time"].std()
-        dtemp_z   = (new_params["Drying_Temp"]      - df["Drying_Temp"].mean())      / df["Drying_Temp"].std()
-        comp_z    = (new_params["Compression_Force"]- df["Compression_Force"].mean())/ df["Compression_Force"].std()
-        speed_z   = (new_params["Machine_Speed"]    - df["Machine_Speed"].mean())    / df["Machine_Speed"].std()
-        moist_z   = (new_params["Moisture_Content"] - df["Moisture_Content"].mean()) / df["Moisture_Content"].std()
-        lub_z     = (new_params["Lubricant_Conc"]   - df["Lubricant_Conc"].mean())   / df["Lubricant_Conc"].std()
-
+        # ── Quality signal (correlation-weighted) ───────────────────────────
         quality_signal = (
             + 0.984 * gran_z
             + 0.984 * binder_z
@@ -406,36 +401,27 @@ elif page == "🤝 HITL Workflow":
         sim_quality = float(df["Quality_Score"].mean()) + quality_signal * df["Quality_Score"].std() * 2.5
         sim_quality = max(40.0, min(75.0, sim_quality))
 
-        # Yield proxy — matches pipeline logic exactly
-        # Based on Tablet_Weight deviation from mean target weight
-        target_weight  = float(df["Tablet_Weight"].mean()) if "Tablet_Weight" in df.columns else 350.0
-        # Estimate tablet weight from compression force and machine speed
-        est_weight     = target_weight + (comp_z * 2.0) + (speed_z * 1.5)
-        weight_dev     = abs(est_weight - target_weight)
-        max_weight_dev = float(df["Tablet_Weight"].apply(
-            lambda x: abs(x - target_weight)
-        ).max()) if "Tablet_Weight" in df.columns else 10.0
-        sim_yield = (1 - weight_dev / max(max_weight_dev, 1e-9)) * 100
+        # ── Yield proxy — driven by same quality signal ──────────────────────
+        # High quality parameters → high yield (consistent tablets)
+        sim_yield = float(df["Yield_Score"].mean()) + (quality_signal * df["Yield_Score"].std() * 3.0)
         sim_yield = max(5.0, min(99.9, sim_yield))
 
-        # Performance proxy — matches pipeline logic exactly
-        # Based on moisture deviation from optimal 2.0%
+        # ── Performance proxy — moisture deviation from optimal 2.0% ─────────
         optimal_moist   = 2.0
         moist_dev       = abs(new_params["Moisture_Content"] - optimal_moist)
         max_mdev        = float(df["Moisture_Content"].apply(
-            lambda x: abs(x - optimal_moist)
-        ).max())
+                              lambda x: abs(x - optimal_moist)).max())
         sim_performance = (1 - moist_dev / max(max_mdev, 1e-9)) * 100
         sim_performance = max(5.0, min(100.0, sim_performance))
 
-        # Energy estimation for new params
+        # ── Energy estimation ────────────────────────────────────────────────
         gran_e  = (new_params["Granulation_Time"] / config.T001_GRANULATION_TIME) * \
                   config.PHASE_ENERGY_PROPORTIONS["Granulation"] * config.T001_TOTAL_ENERGY
-        dry_e   = (new_params["Drying_Time"] / config.T001_DRYING_TIME) * \
-                  (new_params["Drying_Temp"] / config.T001_DRYING_TEMP) * \
+        dry_e   = (new_params["Drying_Time"]  / config.T001_DRYING_TIME) * \
+                  (new_params["Drying_Temp"]  / config.T001_DRYING_TEMP) * \
                   config.PHASE_ENERGY_PROPORTIONS["Drying"] * config.T001_TOTAL_ENERGY
         comp_e  = (new_params["Compression_Force"] / config.T001_COMPRESSION_FORCE) * \
-                  (new_params["Machine_Speed"] / config.T001_MACHINE_SPEED) * \
+                  (new_params["Machine_Speed"]      / config.T001_MACHINE_SPEED) * \
                   config.PHASE_ENERGY_PROPORTIONS["Compression"] * config.T001_TOTAL_ENERGY
         other_e = (new_params["Machine_Speed"] / config.T001_MACHINE_SPEED) * \
                   (config.PHASE_ENERGY_PROPORTIONS["Milling"] +
@@ -444,8 +430,8 @@ elif page == "🤝 HITL Workflow":
                    config.PHASE_ENERGY_PROPORTIONS["Quality_Testing"] +
                    config.PHASE_ENERGY_PROPORTIONS["Preparation"]) * config.T001_TOTAL_ENERGY
 
-        sim_energy_kwh  = (gran_e + dry_e + comp_e + other_e) / 60.0
-        sim_carbon_kg   = sim_energy_kwh * config.CARBON_EMISSION_FACTOR * 1000
+        sim_energy_kwh = (gran_e + dry_e + comp_e + other_e) / 60.0
+        sim_carbon_kg  = sim_energy_kwh * config.CARBON_EMISSION_FACTOR * 1000
 
         st.markdown("**Simulated Outcomes for This Configuration:**")
         sc1, sc2, sc3 = st.columns(3)
@@ -505,7 +491,7 @@ elif page == "🤝 HITL Workflow":
 
     col_d1, col_d2, col_d3 = st.columns(3)
 
-    # Build the new batch metrics for GS evaluation
+    # ── Build new batch metrics for GS evaluation ────────────────────────────
     new_batch_metrics = {
         "batch_id"         : batch_id_input,
         "quality_score"    : round(sim_quality, 2),
@@ -520,7 +506,6 @@ elif page == "🤝 HITL Workflow":
         if st.button("✅ ACCEPT — Use GS Parameters",
                      use_container_width=True, type="primary"):
 
-            # Log the decision
             log_hitl_decision(
                 batch_id=batch_id_input,
                 scenario_key=scenario_key,
@@ -529,7 +514,6 @@ elif page == "🤝 HITL Workflow":
                 weights_used=config.OPTIMIZATION_SCENARIOS[scenario_key]
             )
 
-            # === RUN THE ACTUAL GS UPDATE EVALUATION ===
             from src.golden_signature import evaluate_for_gs_update
             update_result = evaluate_for_gs_update(
                 scenario_key=scenario_key,
@@ -546,7 +530,6 @@ elif page == "🤝 HITL Workflow":
                     f"{update_result['new_score']:.4f} "
                     f"(+{update_result['improvement_pct']:.2f}%)"
                 )
-                # Force reload GS store in session
                 st.session_state.gs_store = load_golden_signatures()
             else:
                 st.warning(update_result["message"])
@@ -608,7 +591,6 @@ elif page == "🤝 HITL Workflow":
                 weights_used=custom_weights
             )
 
-            # Re-run evaluation with custom weights
             from src.golden_signature import evaluate_for_gs_update
             update_result = evaluate_for_gs_update(
                 scenario_key=scenario_key,
