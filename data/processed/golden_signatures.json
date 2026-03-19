@@ -2,28 +2,31 @@
   "GS1_MaxQuality_MinEnergy": {
     "scenario_key": "GS1_MaxQuality_MinEnergy",
     "scenario_label": "Max Quality + Min Energy",
-    "version": 1,
+    "version": 2,
     "created_at": "2026-03-12T16:09:31.496754",
-    "last_updated": "2026-03-19T13:49:52.233799",
-    "source_batch_id": "T_NEW_001",
-    "composite_score": 0.6,
+    "last_updated": "2026-03-19T18:23:42.680937",
+    "source_batch_id": "TEST",
+    "composite_score": 0.7842,
     "quality_score": 75.0,
-    "yield_score": 99.9,
-    "performance_score": 5.0,
-    "energy_kwh": 49.2,
-    "carbon_kg": 11.4637,
+    "yield_score": 85.0,
+    "performance_score": 90.0,
+    "energy_kwh": 49.0,
+    "carbon_kg": 11.4,
     "is_pareto": true,
-    "process_params": {
-      "Granulation_Time": 27.0,
-      "Binder_Amount": 13.5,
-      "Drying_Temp": 42.0,
-      "Drying_Time": 31.83,
-      "Compression_Force": 4.5,
-      "Machine_Speed": 131.48,
-      "Lubricant_Conc": 2.8,
-      "Moisture_Content": 0.2
-    },
-    "update_history": [],
+    "process_params": {},
+    "update_history": [
+      {
+        "archived_at": "2026-03-19T18:23:42.680937",
+        "version": 1,
+        "source_batch_id": "T_NEW_001",
+        "composite_score": 0.6,
+        "quality_score": 75.0,
+        "yield_score": 99.9,
+        "energy_kwh": 49.2,
+        "carbon_kg": 11.4637,
+        "reason": "HITL ACCEPT \u2014 superseded by better batch"
+      }
+    ],
     "hitl_overrides": []
   },
   "GS2_MaxYield_MinCarbon": {

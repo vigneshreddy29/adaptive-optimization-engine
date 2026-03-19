@@ -15,7 +15,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import config
 from src.optimization_engine import run_optimization, normalize_scores, identify_pareto_front
 from src.golden_signature import (
-    load_golden_signatures, update_golden_signature,
+    load_golden_signatures, save_golden_signatures,
     log_hitl_decision, get_hitl_history, get_gs_summary
 )
 from src.adaptive_targets import compute_adaptive_targets, evaluate_batch_against_targets
@@ -39,6 +39,25 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# =============================================================================
+# STARTUP — Load data once, cache for all endpoints
+# =============================================================================
+from functools import lru_cache
+from src.data_pipeline import run_pipeline
+
+@lru_cache(maxsize=1)
+def get_cached_data():
+    """Run pipeline and optimization once at startup. Cache result."""
+    from src.optimization_engine import run_optimization, normalize_scores, identify_pareto_front
+    df = run_pipeline()
+    results, full_df = run_optimization()
+    full_df = normalize_scores(full_df)
+    full_df, pareto_df = identify_pareto_front(full_df)
+    return df, results, full_df, pareto_df
+
+# Pre-warm cache on startup
+_df, _results, _full_df, _pareto_df = get_cached_data()
 
 # =============================================================================
 # REQUEST / RESPONSE MODELS
@@ -124,9 +143,7 @@ def optimize(request: OptimizeRequest):
 def optimize_all():
     """Run optimization across all 3 scenarios and return all results."""
     try:
-        results, full_df = run_optimization()
-        full_df = normalize_scores(full_df)
-        full_df, pareto_df = identify_pareto_front(full_df)
+        _, results, full_df, _ = get_cached_data()
         return {
             "status": "success",
             "total_batches": len(full_df),
